@@ -82,15 +82,17 @@
 </div>
 
 <script>
-    let carrito = []; // Aquí guardamos los productos seleccionados
+    // 1. Intentamos recuperar el carrito guardado. Si no existe, inicia vacío.
+    let carrito = JSON.parse(localStorage.getItem("carritoGuardado")) || [];
     let usuarioLogueado = null;
 
     document.addEventListener("DOMContentLoaded", () => {
         verificarSesion();
         cargarProductos();
+        actualizarVistaCarrito(); // Actualizamos el número apenas carga la página
     });
 
-    // 1. Verificar Sesión
+    // --- SESIÓN ---
     function verificarSesion() {
         const usuario = localStorage.getItem("usuarioLogueado");
         const btnLogin = document.getElementById("btn-login");
@@ -101,11 +103,13 @@
             btnLogin.href = "#";
             btnLogin.classList.add("fw-bold");
 
-            // Botón Salir
-            const li = document.createElement("li");
-            li.className = "nav-item ms-2";
-            li.innerHTML = `<button class="btn btn-outline-light btn-sm" onclick="cerrarSesion()">Salir</button>`;
-            document.querySelector(".navbar-nav").appendChild(li);
+            // Agregar botón Salir
+            if (!document.getElementById("btn-salir")) {
+                const li = document.createElement("li");
+                li.className = "nav-item ms-2";
+                li.innerHTML = `<button id="btn-salir" class="btn btn-outline-light btn-sm" onclick="cerrarSesion()">Salir</button>`;
+                document.querySelector(".navbar-nav").appendChild(li);
+            }
         }
     }
 
@@ -114,7 +118,7 @@
         window.location.reload();
     }
 
-    // 2. Cargar Productos desde Backend
+    // --- CARGAR PRODUCTOS ---
     async function cargarProductos() {
         try {
             const res = await fetch('http://localhost:8080/api/productos');
@@ -141,14 +145,20 @@
             });
         } catch (e) {
             console.error(e);
+            document.getElementById('contenedor-productos').innerHTML = '<p class="text-danger text-center">Error conectando con el servidor.</p>';
         }
     }
 
-    // 3. Lógica del Carrito
+    // --- LÓGICA DEL CARRITO CON MEMORIA ---
     function agregar(nombre, precio) {
         carrito.push({ nombre, precio });
+
+        // GUARDAR EN MEMORIA CADA VEZ QUE AGREGAS
+        localStorage.setItem("carritoGuardado", JSON.stringify(carrito));
+
         actualizarVistaCarrito();
-        // Feedback visual simple
+
+        // Animación del botón
         const btn = event.target;
         const textoOriginal = btn.innerText;
         btn.innerText = "¡Agregado!";
@@ -169,7 +179,7 @@
         if (carrito.length === 0) {
             lista.innerHTML = '<li class="list-group-item text-center text-muted">El carrito está vacío</li>';
         } else {
-            carrito.forEach((item, index) => {
+            carrito.forEach((item) => {
                 total += item.precio;
                 lista.innerHTML += `
                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -181,19 +191,20 @@
         document.getElementById('total-carrito').innerText = `$${total.toLocaleString('es-CL')}`;
     }
 
-    // 4. FINALIZAR COMPRA (Conexión con Backend)
+    // --- FINALIZAR COMPRA ---
     async function finalizarCompra() {
         if (carrito.length === 0) {
             alert("El carrito está vacío 😅");
             return;
         }
         if (!usuarioLogueado) {
-            alert("⚠️ Debes iniciar sesión para comprar.");
-            window.location.href = "login.html";
+            if(confirm("⚠️ Debes iniciar sesión para comprar. ¿Ir al Login ahora? (Tu carrito se guardará)")) {
+                window.location.href = "login.html";
+            }
             return;
         }
 
-        // Preparamos los datos para enviar al Backend
+        // Datos para el backend
         const total = carrito.reduce((sum, item) => sum + item.precio, 0);
         const detalle = carrito.map(item => item.nombre).join(", ");
 
@@ -212,9 +223,12 @@
 
             if (respuesta.ok) {
                 alert("✅ ¡Compra realizada con éxito! Tu pedido ha sido procesado.");
-                carrito = []; // Vaciar carrito
+
+                // LIMPIAR TODO AL FINALIZAR
+                carrito = [];
+                localStorage.removeItem("carritoGuardado");
+
                 actualizarVistaCarrito();
-                // Cerrar modal
                 const modal = bootstrap.Modal.getInstance(document.getElementById('modalCarrito'));
                 modal.hide();
             } else {
