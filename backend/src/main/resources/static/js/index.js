@@ -107,7 +107,7 @@
         document.getElementById('total-carrito').innerText = `$${total.toLocaleString('es-CL')}`;
     }
 
-   // --- FINALIZAR COMPRA (CORREGIDO) ---
+   // --- FINALIZAR COMPRA ---
        async function finalizarCompra() {
            if (carrito.length === 0) {
                alert("El carrito está vacío 😅");
@@ -115,7 +115,6 @@
            }
            if (!usuarioLogueado) {
                if(confirm("⚠️ Debes iniciar sesión para comprar. ¿Ir al Login ahora? (Tu carrito se guardará)")) {
-                   // CAMBIO AQUÍ: Mandamos directo al login y sin "/static/"
                    window.location.href = "login.html";
                }
                return;
