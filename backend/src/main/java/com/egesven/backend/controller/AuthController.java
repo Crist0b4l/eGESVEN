@@ -20,10 +20,7 @@ public class AuthController {
         String username = credenciales.get("username");
         String password = credenciales.get("password");
 
-        // Buscamos en la BD
         Usuario usuario = usuarioRepository.findByUsernameAndPassword(username, password);
-
-        // Si no existe, devolvemos null (o podríamos lanzar error, pero esto es más simple para el JS)
         return usuario;
     }
 }

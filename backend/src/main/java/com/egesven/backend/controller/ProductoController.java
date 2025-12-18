@@ -9,21 +9,17 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/productos")
-@CrossOrigin(origins = "*") // ¡Importante! Permite que cualquiera (tu frontend) pida datos
+@CrossOrigin(origins = "*")
 public class ProductoController {
 
     @Autowired
     private ProductoRepository repository;
 
-    // 1. Endpoint para obtener TODOS los productos (Para el Catálogo)
-    // URL: http://localhost:8080/api/productos
     @GetMapping
     public List<Producto> listarProductos() {
         return repository.findAll();
     }
 
-    // 2. Endpoint para obtener UN producto por ID (Para ver el detalle)
-    // URL: http://localhost:8080/api/productos/1
     @GetMapping("/{id}")
     public Producto obtenerProducto(@PathVariable Long id) {
         return repository.findById(id).orElse(null);

@@ -16,11 +16,9 @@ public class Producto {
     private Integer stock;
     private String imagenUrl;
 
-    // Constructor vacío
     public Producto() {
     }
 
-    // Constructor con datos
     public Producto(String nombre, String descripcion, Double precio, Integer stock, String imagenUrl) {
         this.nombre = nombre;
         this.descripcion = descripcion;
@@ -29,7 +27,6 @@ public class Producto {
         this.imagenUrl = imagenUrl;
     }
 
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

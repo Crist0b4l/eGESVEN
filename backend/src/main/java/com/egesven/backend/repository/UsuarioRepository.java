@@ -6,6 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
-    // Método mágico: Spring crea la consulta SQL solo leyendo el nombre del método
     Usuario findByUsernameAndPassword(String username, String password);
 }

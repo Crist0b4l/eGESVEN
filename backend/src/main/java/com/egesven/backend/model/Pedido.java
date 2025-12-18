@@ -12,7 +12,7 @@ public class Pedido {
 
     private String nombreCliente;
     private Double totalCompra;
-    private String detalleProductos; // Guardaremos "Mouse, Teclado" como texto simple para no complicarnos
+    private String detalleProductos;
     private LocalDateTime fecha;
 
     public Pedido() {}
@@ -24,7 +24,6 @@ public class Pedido {
         this.fecha = LocalDateTime.now();
     }
 
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNombreCliente() { return nombreCliente; }

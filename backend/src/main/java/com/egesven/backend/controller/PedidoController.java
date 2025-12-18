@@ -15,7 +15,6 @@ public class PedidoController {
 
     @PostMapping("/crear")
     public Pedido crearPedido(@RequestBody Pedido pedido) {
-        // Aquí le ponemos la fecha actual automática
         pedido.setFecha(java.time.LocalDateTime.now());
         System.out.println(">>> Pedido recibido de: " + pedido.getNombreCliente());
         return pedidoRepository.save(pedido);

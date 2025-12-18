@@ -10,7 +10,7 @@ public class Usuario {
     private Long id;
 
     private String username;
-    private String password; // En la vida real esto se encripta, hoy NO.
+    private String password;
     private String nombreCompleto;
 
     public Usuario() {}
@@ -21,7 +21,6 @@ public class Usuario {
         this.nombreCompleto = nombreCompleto;
     }
 
-    // Getters y Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getUsername() { return username; }
