@@ -14,7 +14,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             const usuarioEncontrado = await respuesta.json();
 
             if (usuarioEncontrado) {
-                // ¡Éxito! Guardamos el nombre en el navegador para usarlo después
                 localStorage.setItem("usuarioLogueado", usuarioEncontrado.nombreCompleto);
                 window.location.href = "index.html"; // Redirigir al inicio
             } else {
@@ -22,7 +21,6 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
             }
 
         } catch (error) {
-            // Si el backend devuelve "null" o vacío a veces fetch falla al parsear JSON vacío
             document.getElementById("error-msg").style.display = "block";
         }
     });
