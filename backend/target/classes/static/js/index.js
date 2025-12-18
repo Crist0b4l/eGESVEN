@@ -107,51 +107,52 @@
         document.getElementById('total-carrito').innerText = `$${total.toLocaleString('es-CL')}`;
     }
 
-    // --- FINALIZAR COMPRA ---
-    async function finalizarCompra() {
-        if (carrito.length === 0) {
-            alert("El carrito está vacío 😅");
-            return;
-        }
-        if (!usuarioLogueado) {
-            if(confirm("⚠️ Debes iniciar sesión para comprar. ¿Ir al Login ahora? (Tu carrito se guardará)")) {
-                window.location.href = "/static/index.html";
-            }
-            return;
-        }
+   // --- FINALIZAR COMPRA (CORREGIDO) ---
+       async function finalizarCompra() {
+           if (carrito.length === 0) {
+               alert("El carrito está vacío 😅");
+               return;
+           }
+           if (!usuarioLogueado) {
+               if(confirm("⚠️ Debes iniciar sesión para comprar. ¿Ir al Login ahora? (Tu carrito se guardará)")) {
+                   // CAMBIO AQUÍ: Mandamos directo al login y sin "/static/"
+                   window.location.href = "login.html";
+               }
+               return;
+           }
 
-        // Datos para el backend
-        const total = carrito.reduce((sum, item) => sum + item.precio, 0);
-        const detalle = carrito.map(item => item.nombre).join(", ");
+           // Datos para el backend
+           const total = carrito.reduce((sum, item) => sum + item.precio, 0);
+           const detalle = carrito.map(item => item.nombre).join(", ");
 
-        const pedido = {
-            nombreCliente: usuarioLogueado,
-            totalCompra: total,
-            detalleProductos: detalle
-        };
+           const pedido = {
+               nombreCliente: usuarioLogueado,
+               totalCompra: total,
+               detalleProductos: detalle
+           };
 
-        try {
-            const respuesta = await fetch("http://localhost:8080/api/pedidos/crear", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(pedido)
-            });
+           try {
+               const respuesta = await fetch("http://localhost:8080/api/pedidos/crear", {
+                   method: "POST",
+                   headers: { "Content-Type": "application/json" },
+                   body: JSON.stringify(pedido)
+               });
 
-            if (respuesta.ok) {
-                alert("✅ ¡Compra realizada con éxito! Tu pedido ha sido procesado.");
+               if (respuesta.ok) {
+                   alert("✅ ¡Compra realizada con éxito! Tu pedido ha sido procesado.");
 
-                // LIMPIAR TODO AL FINALIZAR
-                carrito = [];
-                localStorage.removeItem("carritoGuardado");
+                   // LIMPIAR TODO AL FINALIZAR
+                   carrito = [];
+                   localStorage.removeItem("carritoGuardado");
 
-                actualizarVistaCarrito();
-                const modal = bootstrap.Modal.getInstance(document.getElementById('modalCarrito'));
-                modal.hide();
-            } else {
-                alert("Hubo un error al procesar el pedido.");
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Error de conexión con el servidor.");
-        }
-    }
+                   actualizarVistaCarrito();
+                   const modal = bootstrap.Modal.getInstance(document.getElementById('modalCarrito'));
+                   modal.hide();
+               } else {
+                   alert("Hubo un error al procesar el pedido.");
+               }
+           } catch (error) {
+               console.error("Error:", error);
+               alert("Error de conexión con el servidor.");
+           }
+       }
